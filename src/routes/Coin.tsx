@@ -10,6 +10,8 @@ import {Helmet} from "react-helmet";
 
 const Container = styled.div`
     padding: 0px 20px;
+    max-width: 450px;
+    margin: 0px auto;
 `;
 
 const Header = styled.header`
@@ -26,6 +28,7 @@ const Loader = styled.div`
 `;
 const Title = styled.h1`
     color: ${props => props.theme.accentColor};
+    font-size: 20px;
 `;
 
 const Overview = styled.div`
@@ -73,6 +76,9 @@ const Tab = styled.span<{ isActive: boolean }>`
   }
 `;
 
+const BackPageBtn = styled.div`
+
+`;
 
 
 interface RouteParams {
@@ -83,6 +89,8 @@ interface RouteState {
     name:string;
 }
 
+interface ICoinProps{
+}
 
 interface IinfoState {
     id: string;
@@ -140,7 +148,7 @@ interface IpriceInfoState {
     };
 }
 
-function Coin() {
+function Coin({}: ICoinProps) {
     //const [loading, setLoading] = useState(true);
     const { coinId } = useParams<RouteParams>();
     const { state } = useLocation<RouteState>();
@@ -148,8 +156,8 @@ function Coin() {
     //const [priceInfo , setPriceInfo] = useState<IpriceInfoState>();
     const priceMatch = useRouteMatch("/:coinId/price"); //내가 어느페이지에 있는 알려주는 리액트 기능
     const chartMatch = useRouteMatch("/:coinId/chart");
-
-    console.log(priceMatch)
+    //console.log("isDark", isDark);
+    //console.log(priceMatch)
     // useEffect(()=>{
     //     (async() => {
     //         const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
@@ -184,8 +192,16 @@ function Coin() {
         <title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</title> 
     </Helmet>
     <Header>
-        <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title> 
+        <Title><Link to="/main">{state?.name ? state.name : loading ? "Loading..." :
+        infoData?.name
+        }      
+        </Link>
+        </Title> 
+
     </Header>
+    <BackPageBtn>
+ 
+    </BackPageBtn>
     {loading ? (<Loader> Loading... </Loader>) 
     : (
         <>
@@ -205,22 +221,24 @@ function Coin() {
             </Overview>
             <Description>{infoData?.description}</Description>
             <Overview>
+                    <OverviewItem>
                     <span>TotalSuply:</span>
                     <span>{tickersData?.total_supply}</span>
-            </Overview>
-            <Overview>
+                    </OverviewItem>
+                    <OverviewItem>
                     <span>Max Supply:</span>
                     <span>{tickersData?.max_supply}</span>
+                    </OverviewItem>
             </Overview>
 
             <Tabs>
                 <Tab isActive={ chartMatch !== null}>
-                    <Link to={`/${coinId}/chart`}>
+                    <Link to={`/coin/${coinId}/chart`}>
                     Chart
                     </Link>
                 </Tab>
                 <Tab isActive={ priceMatch !== null }>
-                    <Link to={`/${coinId}/price`}>
+                    <Link to={`/coin/${coinId}/price`}>
                     Price
                     </Link>
                 </Tab>
@@ -228,10 +246,10 @@ function Coin() {
 
 
             <Switch>
-                <Route path={`/${coinId}/price`}>
+                <Route path={`/coin/${coinId}/price`}>
                     <Price />
                 </Route>
-                <Route path={`/${coinId}/chart`}>
+                <Route path={`/coin/${coinId}/chart`}>
                     <Chart coinId={coinId} />
                 </Route>
             </Switch>

@@ -1,7 +1,10 @@
-import React from 'react';
-import { createGlobalStyle } from 'styled-components';
+import React, { useState } from 'react';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Router from './Router';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { darkTheme, lightTheme } from './theme';
+import { useRecoilValue } from 'recoil';
+import { isDarkAtom } from './atom';
 
 //createGlobalStyle //한 컴포넌트를 만들어줌 전역 스코프에 설정함
 
@@ -72,11 +75,20 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
   //return <Router></Router>;
+
+  //Recoil을 안쓸때
+  //const [isDark, setIsDark] = useState(false);
+  //const toggleDark = () => setIsDark(current => !current);
+  const isDark = useRecoilValue(isDarkAtom);
+  console.log("###recoil", isDark);
+
   return (
     <>
-     <GlobalStyle/>
-     <Router/>
-     <ReactQueryDevtools initialIsOpen={true} />
+     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+      <GlobalStyle/>
+      <Router />
+      <ReactQueryDevtools initialIsOpen={true} />
+     </ThemeProvider>
     </>
   )
 }

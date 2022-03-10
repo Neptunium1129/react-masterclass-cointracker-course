@@ -2,13 +2,17 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import Coins from "./routes/Coins";
 import Coin from "./routes/Coin";
 
-function Router(){
-    return <BrowserRouter>
+interface IRouterProps {
+}
+
+function Router({} : IRouterProps){
+    return <BrowserRouter basename={process.env.PUBLIC_URL}>
+    
         <Switch>
-            <Route path="/:coinId">
+            <Route path="/coin/:coinId">
                 <Coin />
             </Route>
-            <Route path="/">
+            <Route path={["/","/main"]}>
                 <Coins />
             </Route>
         </Switch>

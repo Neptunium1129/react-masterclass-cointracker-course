@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { fetchCoins } from "../api";
+import { isDarkAtom } from "../atom";
 
 const Container = styled.div`
     padding: 0px 20px;
+    max-width: 450px;
+    margin: 0px auto;
 `;
 
 const Header = styled.header`
@@ -22,7 +26,7 @@ const CoinList = styled.ul`
 
 const Coin = styled.li`
     background-color: white;
-    color: ${props => props.theme.bgColor};
+    color: ${props => props.theme.textColor};
     margin-bottom: 10px;
     border-radius: 15px;
     a {
@@ -42,6 +46,16 @@ const Title = styled.h1`
     color: ${props => props.theme.accentColor};
     font-size:25px;
     line-height: 1.7rem;
+`;
+
+const ThemeBtn = styled.div`
+   position: absolute;
+    right: 120px;
+    top: 55px;
+    cursor: pointer;
+    font-size: 25px;
+    color: rgb(252, 246, 245);
+    transition: all 0.5s ease-in-out 0s;
 `;
 
 const Loader = styled.div`
@@ -67,7 +81,10 @@ interface ICoin{
     type: string,
 };
 
-function Coins() {
+interface ICoinsProps{
+}
+
+function Coins({}:ICoinsProps) {
     // const [coins, setCoins] = useState<CoinInterface[]>([]);
     // const [loading, setLoading] = useState(true);
     // useEffect(() => {
@@ -78,10 +95,18 @@ function Coins() {
     //         setLoading(false);
     //     })();
     // }, [])
-
+    const themeName = "";
     const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins);
     console.log(data);
-    
+
+    const fnThemeChage = (event :React.MouseEvent<HTMLButtonElement>) => {
+        alert("@@");
+    };
+
+    const setDarkAtom = useSetRecoilState(isDarkAtom);
+    const toggleDarkAtom = () => setDarkAtom(((prev) => !prev));
+
+    console.log("setterFn", toggleDarkAtom);
     return (
         <Container>
             <Helmet>
@@ -89,16 +114,18 @@ function Coins() {
             </Helmet>
             <Header>
                 <Title>코인 트래커</Title> 
+                <button onClick={toggleDarkAtom}> Toggle Dark Mode</button>
             </Header>
-
+            <ThemeBtn>
+                <button onClick={fnThemeChage}> TEST </button>
+            </ThemeBtn>
  
             {isLoading ? <Loader> Load... </Loader> : ( <CoinList>
                 {data?.slice(0,100).map((coin) => 
                     <Coin key={coin.id}>
                         <Link to={{
-                            pathname:`/${coin.id}`,
+                            pathname:`/coin/${coin.id}`,
                             state: {name : coin.name}
-
                         }}>
                      
                         <IMG src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
