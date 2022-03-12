@@ -3,6 +3,7 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { darkTheme, lightTheme } from './theme';
 import { useRecoilValue } from 'recoil';
+import ToDoList from './components/ToDoList';
 
 //createGlobalStyle //한 컴포넌트를 만들어줌 전역 스코프에 설정함
 
@@ -75,6 +76,7 @@ function App() {
   return (
     <>  
       <GlobalStyle/>
+      <ToDoList />
     </>
   )
 }
